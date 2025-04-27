@@ -49,5 +49,5 @@ public class Event {
     private LocalTime startTime;
 
     @Column(name = "end_time")
-    private LocalTime endLocalTime;
+    private LocalTime endTime;
 }

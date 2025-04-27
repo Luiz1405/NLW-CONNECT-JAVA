@@ -25,6 +25,6 @@ public class EventService {
     }
 
     public Event getByPrettyName(String prettyName){
-
+        return eventRepo.findByPrettyName(prettyName);
     }
 }

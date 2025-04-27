@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.nlw.events.model.Event;
 
 public interface EventRespository extends CrudRepository<Event, Integer> {
-
+    public Event findByPrettyName(String prettyName);
 }
