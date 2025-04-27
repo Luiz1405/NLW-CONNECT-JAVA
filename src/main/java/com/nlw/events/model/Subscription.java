@@ -30,7 +30,7 @@ public class Subscription {
     private Event event;
 
     @ManyToOne
-    @JoinColumn(name = "subscription_user_id")
+    @JoinColumn(name = "subscribed_user_id")
     private User subscriber;
 
     @ManyToOne
