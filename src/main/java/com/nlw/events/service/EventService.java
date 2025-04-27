@@ -20,7 +20,7 @@ public class EventService {
         return eventRepo.save(event);
     }
 
-    public List<Event> getAllItens(){
+    public List<Event> getAllEvents(){
         return (List<Event>)eventRepo.findAll();
     }
 
