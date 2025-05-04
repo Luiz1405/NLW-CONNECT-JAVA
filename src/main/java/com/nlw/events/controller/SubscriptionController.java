@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nlw.events.dto.ErroMessage;
+import com.nlw.events.exception.EventNotFoundException;
 import com.nlw.events.model.Subscription;
 import com.nlw.events.model.User;
 import com.nlw.events.service.SubscriptionService;
@@ -22,13 +24,16 @@ public class SubscriptionController {
     private SubscriptionService service;
 
     @PostMapping("/subscription/{prettyName}")
-    public ResponseEntity<Subscription> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber ) {
+    public ResponseEntity<?> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber ) {
+     try{   
      Subscription res = service.createNewSubscription(prettyName, subscriber);
      if (res != null) {
         return ResponseEntity.ok(res);
      }
 
-     return ResponseEntity.badRequest().build();
+    } catch(EventNotFoundException ex) {
+        return ResponseEntity.status(404).body(new ErroMessage(ex.getMessage()));
     }
-    
+    return ResponseEntity.badRequest().build();
+}
 }
