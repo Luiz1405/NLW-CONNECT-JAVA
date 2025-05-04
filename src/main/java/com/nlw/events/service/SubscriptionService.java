@@ -9,6 +9,7 @@ import com.nlw.events.repository.EventRespository;
 import com.nlw.events.repository.SubscriptionRepository;
 import com.nlw.events.repository.UserRepository;
 import com.nlw.events.exception.EventNotFoundException;
+import com.nlw.events.exception.SubscriptionConflictException;
 import com.nlw.events.model.Event;
 import com.nlw.events.model.Subscription;
 
@@ -37,6 +38,11 @@ public class SubscriptionService {
         Subscription subs = new Subscription();
         subs.setEvent(evt);
         subs.setSubscriber(userRec);
+
+        Subscription tmpSub = subRepository.findByEventAndSubscriber(evt, userRec);
+        if(tmpSub != null ) {
+            throw new SubscriptionConflictException("Já existe inscrição para o usuário " + userRec.getName());
+        }
 
         Subscription res = subRepository.save(subs);
 
