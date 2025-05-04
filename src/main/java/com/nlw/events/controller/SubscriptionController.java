@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nlw.events.dto.ErroMessage;
+import com.nlw.events.dto.SubscriptionResponse;
 import com.nlw.events.exception.EventNotFoundException;
 import com.nlw.events.exception.SubscriptionConflictException;
 import com.nlw.events.model.Subscription;
@@ -27,7 +28,7 @@ public class SubscriptionController {
     @PostMapping("/subscription/{prettyName}")
     public ResponseEntity<?> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber ) {
      try{   
-     Subscription res = service.createNewSubscription(prettyName, subscriber);
+     SubscriptionResponse res = service.createNewSubscription(prettyName, subscriber);
      if (res != null) {
         return ResponseEntity.ok(res);
      }
