@@ -11,6 +11,7 @@ import com.nlw.events.repository.UserRepository;
 import com.nlw.events.dto.SubscriptionResponse;
 import com.nlw.events.exception.EventNotFoundException;
 import com.nlw.events.exception.SubscriptionConflictException;
+import com.nlw.events.exception.UserIndicatorNotFoundException;
 import com.nlw.events.model.Event;
 import com.nlw.events.model.Subscription;
 
@@ -26,7 +27,7 @@ public class SubscriptionService {
     @Autowired
     private SubscriptionRepository subRepository;
 
-    public SubscriptionResponse createNewSubscription(String eventName, User user) {
+    public SubscriptionResponse createNewSubscription(String eventName, User user, Integer userId) {
         Event evt = eventRepo.findByPrettyName(eventName);
         if(evt == null) {
             throw new EventNotFoundException("Evento" + eventName + " não existe");
@@ -36,9 +37,15 @@ public class SubscriptionService {
             userRec = userRepo.save(user);
         }
 
+        User indicador = userRepo.findById(userId).orElse(null);
+        if(indicador == null) {
+            throw new UserIndicatorNotFoundException("Usuário" + userId + " indicar não existe");
+        }
+
         Subscription subs = new Subscription();
         subs.setEvent(evt);
         subs.setSubscriber(userRec);
+        subs.setIndication(indicador);
 
         Subscription tmpSub = subRepository.findByEventAndSubscriber(evt, userRec);
         if(tmpSub != null ) {

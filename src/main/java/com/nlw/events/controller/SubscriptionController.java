@@ -1,7 +1,5 @@
 package com.nlw.events.controller;
 
-
-
 import org.apache.catalina.valves.rewrite.ResolverImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +9,7 @@ import com.nlw.events.dto.ErroMessage;
 import com.nlw.events.dto.SubscriptionResponse;
 import com.nlw.events.exception.EventNotFoundException;
 import com.nlw.events.exception.SubscriptionConflictException;
+import com.nlw.events.exception.UserIndicatorNotFoundException;
 import com.nlw.events.model.Subscription;
 import com.nlw.events.model.User;
 import com.nlw.events.service.SubscriptionService;
@@ -25,10 +24,10 @@ public class SubscriptionController {
     @Autowired
     private SubscriptionService service;
 
-    @PostMapping("/subscription/{prettyName}")
-    public ResponseEntity<?> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber ) {
-     try{   
-     SubscriptionResponse res = service.createNewSubscription(prettyName, subscriber);
+    @PostMapping({"/subscription/{prettyName}", "/subscription/{prettyName}/{userId}"})
+    public ResponseEntity<?> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber, @PathVariable(required = false) Integer userId ) {
+     try {   
+     SubscriptionResponse res = service.createNewSubscription(prettyName, subscriber, userId);
      if (res != null) {
         return ResponseEntity.ok(res);
      }
@@ -37,6 +36,9 @@ public class SubscriptionController {
         return ResponseEntity.status(404).body(new ErroMessage(ex.getMessage()));
     }
     catch(SubscriptionConflictException ex) {
+        return ResponseEntity.status(409).body(new ErroMessage(ex.getMessage()));
+    }
+    catch(UserIndicatorNotFoundException ex) {
         return ResponseEntity.status(409).body(new ErroMessage(ex.getMessage()));
     }
     return ResponseEntity.badRequest().build();
