@@ -17,6 +17,9 @@ import com.nlw.events.service.SubscriptionService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -43,4 +46,24 @@ public class SubscriptionController {
     }
     return ResponseEntity.badRequest().build();
 }
+    @GetMapping("/subscription/{prettyName}/ranking")
+    public ResponseEntity<?> generateRankingByEvent(@PathVariable String prettyName){
+        try{
+            return ResponseEntity.ok(service.getCompleteRanking(prettyName).subList(0, 3));
+        } catch(EventNotFoundException e) {
+            return ResponseEntity.status(404).body(new ErroMessage(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/subscription/{prettyName}/ranking/{userId}")
+    public ResponseEntity<?> generateRankingByEventAndUserId (@PathVariable String prettyName, @PathVariable Integer userId) {
+
+        try{
+           return ResponseEntity.ok(service.getRankingByUser(prettyName, userId));
+        }catch(Exception e){
+            return ResponseEntity.status(404).body(new ErroMessage(e.getMessage()));
+        }
+    }
+    
+    
 }
